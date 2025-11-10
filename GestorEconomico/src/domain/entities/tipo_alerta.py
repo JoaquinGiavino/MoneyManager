@@ -1,0 +1,6 @@
+from enum import Enum
+
+class TipoAlerta(Enum):
+    PRESUPUESTO_EXCEDIDO = "PRESUPUESTO_EXCEDIDO"
+    NUEVO_GASTO = "NUEVO_GASTO"
+    SINCRONIZACION = "SINCRONIZACION"

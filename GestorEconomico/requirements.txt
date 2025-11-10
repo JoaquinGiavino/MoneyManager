@@ -1,0 +1,6 @@
+# Dependencias para el proyecto de gestión de gastos
+# Python estándar - cero dependencias externas necesarias
+
+# Para futuras mejoras (opcionales):
+# matplotlib==3.7.1  # Para gráficos
+# pandas==2.0.3     # Para análisis de datos
