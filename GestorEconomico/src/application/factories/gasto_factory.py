@@ -4,7 +4,7 @@ from src.domain.entities import Gasto, Moneda
 class GastoFactory:
     @staticmethod
     def crear_gasto(descripcion: str, monto: float, fecha: date, 
-                   categoria, usuario, moneda: Moneda = Moneda.ARS):
+                categoria, usuario, moneda: Moneda = Moneda.ARS):
         return Gasto(
             id=None,
             descripcion=descripcion,

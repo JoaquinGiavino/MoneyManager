@@ -5,19 +5,24 @@ from src.domain.interfaces import Exportable
 class ExportadorCSV(Exportable):
     def exportar(self, gastos: List[Gasto]) -> str:
         if not gastos:
-            return ""
+            return "Fecha,Descripcion,Monto,Categoria,Moneda\n"
         
-        output = []
-        output.append("Fecha,Descripcion,Monto,Categoria,Moneda,Presupuesto_Categoria")
+        lines = ["Fecha,Descripcion,Monto,Categoria,Moneda"]
         
         for gasto in gastos:
-            output.append(
-                f"{gasto.fecha},"
-                f"'{gasto.descripcion}',"
-                f"{gasto.monto},"
-                f"{gasto.categoria.nombre},"
-                f"{gasto.moneda.value},"
-                f"{gasto.categoria.presupuesto_mensual}"
-            )
+            # Escapar la descripción si tiene comas
+            descripcion = gasto.descripcion
+            if ',' in descripcion or '"' in descripcion:
+                descripcion = descripcion.replace('"', '""')
+                descripcion = f'"{descripcion}"'
+            
+            line = [
+                gasto.fecha.isoformat(),
+                descripcion,
+                str(gasto.monto),
+                gasto.categoria.nombre,
+                gasto.moneda.value
+            ]
+            lines.append(','.join(line))
         
-        return "\n".join(output)
+        return '\n'.join(lines)

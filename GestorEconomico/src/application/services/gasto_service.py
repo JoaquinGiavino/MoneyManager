@@ -5,14 +5,12 @@ from src.domain.entities import Gasto, Usuario, Categoria
 from src.core.exceptions import ServicioError, ValidacionError
 
 class ServicioGastos(IServicioGastos):
-    """Servicio principal para gestión de gastos del Gestor Económico"""
     
     def __init__(self, persistencia: IPersistenciaLocal):
         self.persistencia = persistencia
         print("✅ Servicio de Gastos del Gestor Económico inicializado")
     
     def registrar_gasto(self, gasto: Gasto) -> None:
-        """Registrar un nuevo gasto en el Gestor Económico"""
         try:
             if not gasto.validar():
                 raise ValidacionError("El gasto no pasa la validación del Gestor Económico")
@@ -40,7 +38,6 @@ class ServicioGastos(IServicioGastos):
             raise ServicioError(f"Error al obtener gastos del mes en el Gestor Económico: {str(e)}")
     
     def obtener_gastos_por_categoria(self, categoria: Categoria, usuario: Usuario) -> List[Gasto]:
-        """Obtener gastos por categoría en el Gestor Económico"""
         try:
             # Obtener todos los gastos y filtrar por categoría
             todos_gastos = self.persistencia.obtener_gastos(
@@ -57,7 +54,6 @@ class ServicioGastos(IServicioGastos):
             raise ServicioError(f"Error al obtener gastos por categoría: {str(e)}")
     
     def obtener_gastos_por_rango_fechas(self, fecha_inicio: date, fecha_fin: date, usuario: Usuario) -> List[Gasto]:
-        """Obtener gastos dentro de un rango de fechas específico"""
         try:
             gastos = self.persistencia.obtener_gastos(fecha_inicio, fecha_fin, usuario)
             print(f"✅ Obtenidos {len(gastos)} gastos del {fecha_inicio} al {fecha_fin}")
@@ -66,7 +62,6 @@ class ServicioGastos(IServicioGastos):
             raise ServicioError(f"Error al obtener gastos por rango de fechas: {str(e)}")
     
     def eliminar_gasto(self, gasto_id: int, usuario: Usuario) -> bool:
-        """Eliminar un gasto del Gestor Económico"""
         try:
             if gasto_id <= 0:
                 raise ValidacionError("ID de gasto inválido")

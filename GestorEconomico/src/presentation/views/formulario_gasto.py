@@ -9,44 +9,137 @@ class FormularioGastoView(ttk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.categorias = categorias
-        self.create_widgets()
+        self.create_modern_widgets()
     
-    def create_widgets(self):
-        ttk.Label(self, text="➕ Agregar Nuevo Gasto", 
-                font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+    def create_modern_widgets(self):
+        # Colores modernos
+        self.primary_color = '#4361ee'
+        self.success_color = '#4cc9f0'
+        self.danger_color = '#f72585'
+        self.card_bg = '#ffffff'
+        self.light_gray = '#f8f9fa'
         
-        ttk.Label(self, text="Descripción:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        self.descripcion_entry = ttk.Entry(self, width=30, font=("Arial", 10))
-        self.descripcion_entry.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
+        # Container principal
+        main_container = tk.Frame(self, bg=self.card_bg)
+        main_container.pack(fill='both', expand=True, padx=10, pady=10)
+        
+        # Título del formulario
+        title_label = tk.Label(main_container,
+                            text="➕ NUEVO GASTO",
+                            font=('Arial', 14, 'bold'),
+                            fg=self.primary_color,
+                            bg=self.card_bg,
+                            pady=10)
+        title_label.pack(fill='x')
+        
+        # Campo Descripción
+        desc_frame = self.create_modern_input_field(main_container, "Descripción del Gasto:", 0)
+        self.descripcion_entry = self.create_modern_entry(desc_frame)
+        self.descripcion_entry.pack(fill='x', pady=5)
         self.descripcion_entry.focus()
         
-        ttk.Label(self, text="Monto:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        monto_frame = ttk.Frame(self)
-        monto_frame.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        # Campo Monto
+        monto_frame = self.create_modern_input_field(main_container, "Monto ($):", 1)
+        monto_input_frame = tk.Frame(monto_frame, bg=self.card_bg)
+        monto_input_frame.pack(fill='x', pady=5)
         
-        self.monto_entry = ttk.Entry(monto_frame, width=15, font=("Arial", 10))
+        self.monto_entry = self.create_modern_entry(monto_input_frame, width=15)
         self.monto_entry.insert(0, "0.00")
-        self.monto_entry.pack(side="left")
+        self.monto_entry.pack(side='left')
         
-        ttk.Label(monto_frame, text="ARS").pack(side="left", padx=(5, 0))
+        # Badge de moneda
+        currency_badge = tk.Label(monto_input_frame,
+                                text="ARS",
+                                font=('Arial', 9, 'bold'),
+                                fg='white',
+                                bg=self.primary_color,
+                                padx=8,
+                                pady=2)
+        currency_badge.pack(side='left', padx=(8, 0))
         
-        ttk.Label(self, text="Categoría:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
-        self.categoria_combo = ttk.Combobox(self, values=[cat.nombre for cat in self.categorias], 
-                                        state="readonly", width=27)
-        self.categoria_combo.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        # Campo Categoría
+        cat_frame = self.create_modern_input_field(main_container, "Categoría:", 2)
+        self.categoria_combo = self.create_modern_combobox(cat_frame)
+        self.categoria_combo.pack(fill='x', pady=5)
         if self.categorias:
             self.categoria_combo.set(self.categorias[0].nombre)
         
-        ttk.Label(self, text="Fecha:").grid(row=4, column=0, sticky="w", padx=5, pady=5)
-        self.fecha_entry = ttk.Entry(self, width=12, font=("Arial", 10))
+        # Campo Fecha
+        fecha_frame = self.create_modern_input_field(main_container, "Fecha:", 3)
+        fecha_input_frame = tk.Frame(fecha_frame, bg=self.card_bg)
+        fecha_input_frame.pack(fill='x', pady=5)
+        
+        self.fecha_entry = self.create_modern_entry(fecha_input_frame, width=12)
         self.fecha_entry.insert(0, date.today().strftime("%d/%m/%Y"))
-        self.fecha_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+        self.fecha_entry.pack(side='left')
         
-        self.agregar_btn = ttk.Button(self, text="Agregar Gasto", 
-                                    command=self.agregar_gasto, style="Accent.TButton")
-        self.agregar_btn.grid(row=5, column=0, columnspan=2, pady=15)
+        # Botón de hoy
+        today_btn = tk.Button(fecha_input_frame,
+                            text="Hoy",
+                            font=('Arial', 8),
+                            fg=self.primary_color,
+                            bg=self.light_gray,
+                            borderwidth=1,
+                            relief='solid',
+                            command=self.set_today_date)
+        today_btn.pack(side='left', padx=(8, 0))
         
-        self.grid_columnconfigure(1, weight=1)
+        # Botón de acción principal
+        btn_container = tk.Frame(main_container, bg=self.card_bg)
+        btn_container.pack(fill='x', pady=20)
+        
+        self.agregar_btn = tk.Button(btn_container,
+                                    text="➕ AGREGAR GASTO",
+                                    font=('Arial', 12, 'bold'),
+                                    fg='white',
+                                    bg=self.primary_color,
+                                    borderwidth=0,
+                                    padx=30,
+                                    pady=12,
+                                    command=self.agregar_gasto)
+        self.agregar_btn.pack(fill='x')
+        
+        # Bind Enter key para agregar gasto
+        self.descripcion_entry.bind('<Return>', lambda e: self.agregar_gasto())
+        self.monto_entry.bind('<Return>', lambda e: self.agregar_gasto())
+        self.fecha_entry.bind('<Return>', lambda e: self.agregar_gasto())
+    
+    def create_modern_input_field(self, parent, label_text, row):
+        container = tk.Frame(parent, bg=self.card_bg)
+        container.pack(fill='x', pady=8)
+        
+        label = tk.Label(container,
+                        text=label_text,
+                        font=('Arial', 10, 'bold'),
+                        fg='#495057',
+                        bg=self.card_bg,
+                        anchor='w')
+        label.pack(fill='x')
+        
+        return container
+    
+    def create_modern_entry(self, parent, width=30, **kwargs):
+        entry = tk.Entry(parent,
+                        width=width,
+                        font=('Arial', 10),
+                        relief='solid',
+                        bg=self.light_gray,
+                        fg='#212529',
+                        bd=1,
+                        **kwargs)
+        return entry
+    
+    def create_modern_combobox(self, parent):
+        combo = ttk.Combobox(parent,
+                        values=[cat.nombre for cat in self.categorias],
+                        state="readonly",
+                        font=('Arial', 10))
+        
+        return combo
+    
+    def set_today_date(self):
+        self.fecha_entry.delete(0, tk.END)
+        self.fecha_entry.insert(0, date.today().strftime("%d/%m/%Y"))
     
     def agregar_gasto(self):
         try:
@@ -55,6 +148,7 @@ class FormularioGastoView(ttk.Frame):
             fecha_str = self.fecha_entry.get().strip()
             categoria_nombre = self.categoria_combo.get()
             
+            # Validaciones
             ValidadorDatos.validar_descripcion(descripcion)
             monto = float(monto_str)
             ValidadorDatos.validar_monto(monto)
@@ -65,22 +159,44 @@ class FormularioGastoView(ttk.Frame):
             if not categoria:
                 raise ValidacionError("Categoría no válida")
             
-            self.controller.agregar_gasto(descripcion, monto, fecha, categoria)
+            # Efecto visual de carga
+            self.agregar_btn.config(text="⏳ PROCESANDO...", bg='#6c757d')
+            self.update()
             
-            self.descripcion_entry.delete(0, tk.END)
-            self.monto_entry.delete(0, tk.END)
-            self.monto_entry.insert(0, "0.00")
-            self.descripcion_entry.focus()
+            # Agregar gasto
+            success = self.controller.agregar_gasto(descripcion, monto, fecha, categoria)
             
-            messagebox.showinfo("Éxito", "✅ Gasto agregado correctamente")
+            if success:
+                # Efecto de éxito
+                self.agregar_btn.config(text="✅ GASTO AGREGADO", bg=self.success_color)
+                self.after(1000, self.reset_form)
+            else:
+                raise Exception("No se pudo agregar el gasto")
             
         except (ValueError, ValidacionError) as e:
-            messagebox.showerror("Error de Validación", f"❌ {str(e)}")
+            self.show_error_message(str(e))
         except Exception as e:
-            messagebox.showerror("Error", f"❌ Error al agregar gasto: {str(e)}")
+            self.show_error_message(f"Error al agregar gasto: {str(e)}")
+        finally:
+            self.after(1500, self.reset_button)
+    
+    def reset_form(self):
+        self.descripcion_entry.delete(0, tk.END)
+        self.monto_entry.delete(0, tk.END)
+        self.monto_entry.insert(0, "0.00")
+        self.fecha_entry.delete(0, tk.END)
+        self.fecha_entry.insert(0, date.today().strftime("%d/%m/%Y"))
+        self.descripcion_entry.focus()
+    
+    def reset_button(self):
+        self.agregar_btn.config(text="➕ AGREGAR GASTO", bg=self.primary_color)
+    
+    def show_error_message(self, message):
+        self.agregar_btn.config(text="❌ ERROR", bg=self.danger_color)
+        messagebox.showerror("Error de Validación", f"❌ {message}")
     
     def actualizar_categorias(self, categorias):
         self.categorias = categorias
-        self.categoria_combo["values"] = [cat.nombre for cat in categorias]
+        self.categoria_combo['values'] = [cat.nombre for cat in categorias]
         if categorias:
             self.categoria_combo.set(categorias[0].nombre)

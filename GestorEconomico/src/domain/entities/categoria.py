@@ -22,11 +22,9 @@ class Categoria:
         return f"{self.icono} {self.nombre} (${self.presupuesto_mensual:.2f})"
     
     def __hash__(self):
-        """Hacer la clase hashable para usar como clave en diccionarios"""
         return hash((self.id, self.nombre))
     
     def __eq__(self, other):
-        """Definir igualdad para comparación"""
         if not isinstance(other, Categoria):
             return False
         return self.id == other.id and self.nombre == other.nombre

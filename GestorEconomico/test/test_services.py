@@ -13,10 +13,8 @@ from src.application.strategies import AnalisisTotal, AnalisisPorCategoria
 from src.core.exceptions import ServicioError, ValidacionError
 
 class TestServicioGastos(unittest.TestCase):
-    """Pruebas unitarias para el ServicioGastos del Gestor Económico"""
     
     def setUp(self):
-        """Configuración inicial para las pruebas de servicios"""
         # Mock de persistencia
         self.mock_persistencia = Mock()
         self.servicio = ServicioGastos(self.mock_persistencia)
@@ -26,7 +24,6 @@ class TestServicioGastos(unittest.TestCase):
         self.categoria = Categoria(id=1, nombre="Alimentación", presupuesto_mensual=1000.0)
     
     def test_registrar_gasto_valido(self):
-        """Test: Registrar gasto válido debe llamar a persistencia"""
         gasto = Gasto(
             id=None,
             descripcion="Almuerzo Test",
@@ -46,7 +43,6 @@ class TestServicioGastos(unittest.TestCase):
         self.mock_persistencia.guardar_gasto.assert_called_once_with(gasto)
     
     def test_registrar_gasto_invalido(self):
-        """Test: Registrar gasto inválido debe lanzar ServicioError"""
         gasto = Gasto(
             id=None,
             descripcion="",  # Descripción vacía - inválida
@@ -60,7 +56,6 @@ class TestServicioGastos(unittest.TestCase):
             self.servicio.registrar_gasto(gasto)
     
     def test_obtener_gastos_por_mes(self):
-        """Test: Obtener gastos por mes debe llamar a persistencia con fechas correctas"""
         # Configurar mock
         gastos_mock = []
         self.mock_persistencia.obtener_gastos = Mock(return_value=gastos_mock)
@@ -82,7 +77,6 @@ class TestServicioGastos(unittest.TestCase):
         self.assertEqual(resultado, gastos_mock)
     
     def test_obtener_gastos_por_mes_diciembre(self):
-        """Test: Obtener gastos por diciembre debe manejar cambio de año correctamente"""
         # Configurar mock
         self.mock_persistencia.obtener_gastos = Mock(return_value=[])
         
@@ -100,10 +94,8 @@ class TestServicioGastos(unittest.TestCase):
         self.assertEqual(fecha_fin, date(2025, 1, 1) - timedelta(days=1))  # 31 de diciembre
 
 class TestAnalizadorGastos(unittest.TestCase):
-    """Pruebas unitarias para el AnalizadorGastos del Gestor Económico"""
     
     def setUp(self):
-        """Configuración inicial para las pruebas del analizador"""
         self.usuario = Usuario(id=1, nombre="Usuario Test", email="test@example.com")
         self.categoria_comida = Categoria(id=1, nombre="Alimentación", presupuesto_mensual=1000.0)
         self.categoria_transporte = Categoria(id=2, nombre="Transporte", presupuesto_mensual=500.0)
@@ -125,7 +117,6 @@ class TestAnalizadorGastos(unittest.TestCase):
         self.analizador = AnalizadorGastos(estrategias)
     
     def test_calcular_promedios(self):
-        """Test: Calcular promedios por categoría"""
         promedios = self.analizador.calcular_promedios(self.gastos)
         
         self.assertIn("Alimentación", promedios)
@@ -134,12 +125,10 @@ class TestAnalizadorGastos(unittest.TestCase):
         self.assertEqual(promedios["Transporte"], 75.0)     # (50 + 100) / 2
     
     def test_calcular_promedios_sin_gastos(self):
-        """Test: Calcular promedios sin gastos debe retornar diccionario vacío"""
         promedios = self.analizador.calcular_promedios([])
         self.assertEqual(promedios, {})
     
     def test_verificar_alertas_presupuesto_excedido(self):
-        """Test: Verificar alertas cuando se excede el presupuesto"""
         # Crear gastos que excedan el presupuesto
         gastos_exceso = [
             Gasto(id=1, descripcion="Supermercado", monto=600.0, fecha=date.today(), 
@@ -155,7 +144,6 @@ class TestAnalizadorGastos(unittest.TestCase):
         self.assertIn(TipoAlerta.PRESUPUESTO_EXCEDIDO, alertas)
     
     def test_verificar_alertas_nuevo_gasto(self):
-        """Test: Verificar alertas con nuevos gastos"""
         from src.domain.entities import TipoAlerta
         alertas = self.analizador.verificar_alertas(self.gastos)
         
@@ -163,7 +151,6 @@ class TestAnalizadorGastos(unittest.TestCase):
         self.assertIn(TipoAlerta.NUEVO_GASTO, alertas)
     
     def test_ejecutar_analisis_completo(self):
-        """Test: Ejecutar análisis completo con múltiples estrategias"""
         resultados = self.analizador.ejecutar_analisis_completo(self.gastos)
         
         # Debería contener resultados de todas las estrategias
@@ -181,10 +168,8 @@ class TestAnalizadorGastos(unittest.TestCase):
         self.assertIn("Transporte", analisis_categoria)
 
 class TestEstrategiasAnalisis(unittest.TestCase):
-    """Pruebas unitarias para las estrategias de análisis del Gestor Económico"""
     
     def setUp(self):
-        """Configuración inicial para las pruebas de estrategias"""
         self.usuario = Usuario(id=1, nombre="Usuario Test", email="test@example.com")
         self.categoria = Categoria(id=1, nombre="Alimentación", presupuesto_mensual=1000.0)
         
@@ -196,7 +181,6 @@ class TestEstrategiasAnalisis(unittest.TestCase):
         ]
     
     def test_analisis_total(self):
-        """Test: Estrategia de análisis total"""
         estrategia = AnalisisTotal()
         resultado = estrategia.analizar(self.gastos)
         

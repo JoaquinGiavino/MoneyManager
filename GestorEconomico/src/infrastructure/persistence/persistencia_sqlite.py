@@ -176,7 +176,6 @@ class PersistenciaSQLite(IPersistenciaLocal):
         finally:
             conn.close()
 
-    # 🔥 MÉTODO CORREGIDO - BIEN INDENTADO
     def eliminar_gasto(self, gasto_id: int, usuario: Usuario) -> bool:
         """Eliminar un gasto del Gestor Económico"""
         conn = self._get_connection()
