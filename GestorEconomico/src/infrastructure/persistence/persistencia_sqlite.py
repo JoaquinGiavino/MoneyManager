@@ -33,7 +33,6 @@ class PersistenciaSQLite(IPersistenciaLocal):
             ))
             
             conn.commit()
-            print(f"✅ Gasto guardado: {gasto.descripcion} - ${gasto.monto:.2f}")
             
         except sqlite3.Error as e:
             conn.rollback()
@@ -82,7 +81,6 @@ class PersistenciaSQLite(IPersistenciaLocal):
                 
                 gastos.append(gasto)
             
-            print(f"✅ Obtenidos {len(gastos)} gastos del período {fecha_inicio} a {fecha_fin}")
             return gastos
             
         except sqlite3.Error as e:
@@ -113,7 +111,6 @@ class PersistenciaSQLite(IPersistenciaLocal):
                 )
                 categorias.append(categoria)
             
-            print(f"✅ Obtenidas {len(categorias)} categorías")
             return categorias
             
         except sqlite3.Error as e:
@@ -165,7 +162,6 @@ class PersistenciaSQLite(IPersistenciaLocal):
             
             if row:
                 usuario = Usuario(id=row[0], nombre=row[1], email=row[2])
-                print(f"✅ Usuario encontrado: {usuario.nombre}")
                 return usuario
             
             print("⚠️ Usuario no encontrado")

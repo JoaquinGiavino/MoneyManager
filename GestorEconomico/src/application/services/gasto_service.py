@@ -8,7 +8,6 @@ class ServicioGastos(IServicioGastos):
     
     def __init__(self, persistencia: IPersistenciaLocal):
         self.persistencia = persistencia
-        print("✅ Servicio de Gastos del Gestor Económico inicializado")
     
     def registrar_gasto(self, gasto: Gasto) -> None:
         try:
@@ -16,7 +15,6 @@ class ServicioGastos(IServicioGastos):
                 raise ValidacionError("El gasto no pasa la validación del Gestor Económico")
             
             self.persistencia.guardar_gasto(gasto)
-            print(f"✅ Gasto registrado exitosamente: {gasto.descripcion}")
             
         except Exception as e:
             raise ServicioError(f"Error al registrar gasto en el Gestor Económico: {str(e)}")
@@ -31,7 +29,6 @@ class ServicioGastos(IServicioGastos):
                 fecha_fin = date(año, mes + 1, 1) - timedelta(days=1)
             
             gastos = self.persistencia.obtener_gastos(fecha_inicio, fecha_fin, usuario)
-            print(f"✅ Obtenidos {len(gastos)} gastos para {mes}/{año}")
             return gastos
             
         except Exception as e:

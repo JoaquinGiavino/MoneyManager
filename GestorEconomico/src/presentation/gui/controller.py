@@ -40,7 +40,6 @@ class ControllerGastos:
         # Vistas 
         self.vista_principal = None
         
-        print("✅ Controlador del Gestor Económico inicializado")
     
     def agregar_gasto(self, descripcion: str, monto: float, fecha: date, categoria):
         try:
@@ -133,3 +132,16 @@ class ControllerGastos:
                     "¡Alerta! Has excedido el presupuesto en alguna categoría",
                     self.usuario_actual
                 )
+
+    def exportar_excel(self) -> str:
+        """Exportar a formato CSV compatible con Excel"""
+        try:
+            gastos = self.obtener_gastos_mes_actual()
+            
+            if not gastos:
+                raise Exception("No hay gastos para exportar")
+            
+            return self.gestor_exportacion.exportar(gastos, "csv")
+            
+        except Exception as e:
+            raise Exception(f"Error al exportar a Excel: {str(e)}")

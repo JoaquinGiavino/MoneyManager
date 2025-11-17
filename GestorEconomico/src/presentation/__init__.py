@@ -9,11 +9,11 @@ Contiene toda la capa de presentación:
 """
 
 from .gui import GestionGastosApp, ControllerGastos, PantallaPrincipal
-from .views import FormularioGastoView, ListaGastosView, GraficoTendenciasView, ExportacionDialog
+from .views import FormularioGastoView, ListaGastosView, GraficoTendenciasView
 from .utils import ValidadorDatos, FormatoRegional, GastoFactory
 
 __all__ = [
     'GestionGastosApp', 'ControllerGastos', 'PantallaPrincipal',
-    'FormularioGastoView', 'ListaGastosView', 'GraficoTendenciasView', 'ExportacionDialog',
+    'FormularioGastoView', 'ListaGastosView', 'GraficoTendenciasView',
     'ValidadorDatos', 'FormatoRegional', 'GastoFactory'
 ]

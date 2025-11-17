@@ -10,12 +10,12 @@ Contiene la lógica de aplicación:
 
 from .services import ServicioGastos, AnalizadorGastos, GestorReportes, ComparadorMensual, ServicioCategorias
 from .strategies import AnalisisTotal, AnalisisPorCategoria, AnalisisTendencias
-from .exporters import ExportadorCSV, ExportadorJSON, ExportadorXML, GestorExportacion
+from .exporters import ExportadorCSV, GestorExportacion
 from .factories import GastoFactory
 
 __all__ = [
     'ServicioGastos', 'AnalizadorGastos', 'GestorReportes', 'ComparadorMensual', 'ServicioCategorias',
     'AnalisisTotal', 'AnalisisPorCategoria', 'AnalisisTendencias',
-    'ExportadorCSV', 'ExportadorJSON', 'ExportadorXML', 'GestorExportacion',
+    'ExportadorCSV', 'GestorExportacion',
     'GastoFactory'
 ]
