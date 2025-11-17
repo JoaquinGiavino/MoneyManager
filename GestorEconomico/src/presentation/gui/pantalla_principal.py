@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from src.presentation.views import FormularioGastoView, ListaGastosView, GraficoTendenciasView
+from src.presentation.views.gestion_categorias import GestionCategoriasView
 
 class PantallaPrincipal(ttk.Frame):
     def __init__(self, parent, controller):
@@ -106,11 +107,25 @@ class PantallaPrincipal(ttk.Frame):
         analisis_frame = ttk.Frame(self.notebook, style='Card.TFrame')
         self.setup_analisis_tab(analisis_frame)
         
+        # NUEVA: Pestaña de Gestión de Categorías
+        categorias_frame = ttk.Frame(self.notebook, style='Card.TFrame')
+        self.setup_categorias_tab(categorias_frame)
+        
         self.notebook.add(gastos_frame, text="💸 GESTIÓN DE GASTOS")
         self.notebook.add(analisis_frame, text="📊 ANÁLISIS")
+        self.notebook.add(categorias_frame, text="🏷️ CATEGORÍAS")  # Nueva pestaña
         
         self.notebook.pack(fill='both', expand=True)
-    
+        
+        
+    def setup_categorias_tab(self, parent):
+        """Configurar pestaña de gestión de categorías"""
+        main_container = tk.Frame(parent, bg=self.card_bg)
+        main_container.pack(fill='both', expand=True, padx=2, pady=2)
+        
+        self.gestion_categorias = GestionCategoriasView(main_container, self.controller)
+        self.gestion_categorias.pack(fill='both', expand=True, padx=10, pady=10)
+        
     def setup_gastos_tab(self, parent):
         # Container principal
         main_container = tk.Frame(parent, bg=self.card_bg)

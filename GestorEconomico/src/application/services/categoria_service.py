@@ -28,3 +28,19 @@ class ServicioCategorias:
             if categoria.nombre == nombre:
                 return categoria
         raise ServicioError(f"Categoría '{nombre}' no encontrada")
+    
+    def eliminar(self, categoria_id: int) -> bool:
+        """Eliminar categoría personalizada si no tiene gastos asociados"""
+        try:
+            # Verificar que existe y es personalizada
+            categorias = self.obtener_todas()
+            categoria = next((cat for cat in categorias if cat.id == categoria_id), None)
+            
+            if not categoria or not categoria.es_personalizada:
+                return False
+            
+            # Eliminar de la persistencia
+            return self.persistencia.eliminar_categoria(categoria_id)
+            
+        except Exception as e:
+            raise ServicioError(f"Error al eliminar categoría: {str(e)}")

@@ -219,3 +219,36 @@ class PersistenciaSQLite(IPersistenciaLocal):
             raise PersistenciaError(f"Error al eliminar gasto: {str(e)}")
         finally:
             conn.close()
+            
+    def eliminar_categoria(self, categoria_id: int) -> bool:
+        """Eliminar una categoría personalizada si no tiene gastos asociados"""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            # 1. Verificar que la categoría es personalizada
+            cursor.execute('SELECT es_personalizada FROM categorias WHERE id = ?', (categoria_id,))
+            resultado = cursor.fetchone()
+            
+            if not resultado or not resultado[0]:  # No es personalizada o no existe
+                return False
+            
+            # 2. Verificar que no tiene gastos asociados
+            cursor.execute('SELECT COUNT(*) FROM gastos WHERE categoria_id = ?', (categoria_id,))
+            count_gastos = cursor.fetchone()[0]
+            
+            if count_gastos > 0:
+                return False  # No se puede eliminar porque tiene gastos
+            
+            # 3. Eliminar la categoría
+            cursor.execute('DELETE FROM categorias WHERE id = ?', (categoria_id,))
+            conn.commit()
+            
+            filas_afectadas = cursor.rowcount
+            return filas_afectadas > 0
+            
+        except sqlite3.Error as e:
+            conn.rollback()
+            raise PersistenciaError(f"Error al eliminar categoría: {str(e)}")
+        finally:
+            conn.close()
